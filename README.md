@@ -24,3 +24,6 @@ Hello, world!
 go test ./...
 ```
 
+`TestGreeting` is the positive test: it verifies that `greeting()` returns exactly `Hello, world!`.
+
+`TestGreetingDoesNotReturnIncorrectMessage` is the negative test: it verifies that `greeting()` does not return the incorrect message `Goodbye, world!`.
