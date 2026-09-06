@@ -13,6 +13,10 @@ import (
 func main() {
 	fmt.Println(greeting.Message())
 	
+	if len(os.Args) < 1 {
+		fmt.Fprintf(os.Stderr, "Usage: %s < input.txt\n", os.Args[0])
+		return
+	}
 
 	var (
 		sum map[string]int
@@ -58,4 +62,9 @@ func main() {
 		fmt.Printf("%-30s %10d\n", domain, visits)
 	}
 	fmt.Printf("\n%-30s %10d\n", "Total", total)
+
+
+if err := in.Err(); err != nil {
+    fmt.Fprintf(os.Stderr, "reading standard input: %s\n", err)
+}
 }
