@@ -1,11 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
 
-func greeting() string {
-	return "Hello, world!"
-}
+	"go-log-parser/greeting"
+)
 
 func main() {
-	fmt.Println(greeting())
+	fmt.Println(greeting.Message())
 }
