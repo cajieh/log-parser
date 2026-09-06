@@ -9,7 +9,7 @@ func TestGreeting(t *testing.T) {
 }
 
 func TestGreetingDoesNotReturnIncorrectMessage(t *testing.T) {
-	if got := greeting(); got == "Goodbye, world!" {
-		t.Fatalf("greeting() returned an incorrect message: %q", got)
+	if actual, unexpected := greeting(), "Goodbye, world!"; actual == unexpected {
+		t.Fatalf("greeting() returned an incorrect message: %q", actual)
 	}
 }
