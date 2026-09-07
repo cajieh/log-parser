@@ -10,8 +10,13 @@ import (
 	"go-log-parser/greeting"
 )
 
+type result struct {
+	domain string
+	visits int
+}
+
 type parser struct {
-		sum map[string]int
+		sum map[string]result
 	    domains []string
 		total int
 		lines int
@@ -25,7 +30,7 @@ func main() {
 		return
 	}
 
-	p := parser{sum: make(map[string]int)}
+	p := parser{sum: make(map[string]result)}
 
 	in := bufio.NewScanner(os.Stdin)
 
@@ -50,15 +55,17 @@ func main() {
 			p.domains = append(p.domains, domain)
 		}
 		p.total += visits	
-		p.sum[domain] += visits
+
+		p.sum[domain] = result{domain: domain, visits: visits + p.sum[domain].visits}
 	}
 
-	fmt.Printf("%-30s %10s\n", "Domain", "visit counts:")
+	fmt.Printf("%-30s %10s\n", "Domain", "Visit counts:")
+	fmt.Printf("%-30s %10s\n", strings.Repeat("-", 30), strings.Repeat("-", 10))
 
 	sort.Strings(p.domains)
 	for _, domain := range p.domains {
-		visits := p.sum[domain]
-		fmt.Printf("%-30s %10d\n", domain, visits)
+		parsed := p.sum[domain]
+		fmt.Printf("%-30s %10d\n", domain, parsed.visits)
 	}
 	fmt.Printf("\n%-30s %10d\n", "Total", p.total)
 
