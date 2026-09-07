@@ -2,15 +2,15 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strings"
-	"sort"
 	"go-log-parser/greeting"
+	"os"
+	"sort"
+	"strings"
 )
 
 func main() {
 	fmt.Println(greeting.Message())
-	
+
 	if len(os.Args) < 1 {
 		fmt.Fprintf(os.Stderr, "Usage: %s < input.txt\n", os.Args[0])
 		return
