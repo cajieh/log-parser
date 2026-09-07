@@ -2,19 +2,15 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strings"
-	"sort"
 	"go-log-parser/greeting"
+	"io"
+	"os"
+	"sort"
+	"strings"
 )
 
 func main() {
 	fmt.Println(greeting.Message())
-	
-	if len(os.Args) < 1 {
-		fmt.Fprintf(os.Stderr, "Usage: %s < input.txt\n", os.Args[0])
-		return
-	}
 
 	p, err := parse(os.Stdin)
 	if err != nil {
@@ -22,13 +18,30 @@ func main() {
 		return
 	}
 
-	fmt.Printf("%-30s %10s\n", "Domain", "Visit counts:")
-	fmt.Printf("%-30s %10s\n", strings.Repeat("-", 30), strings.Repeat("-", 10))
-
-	sort.Strings(p.domains)
-	for _, domain := range p.domains {
-		parsed := p.sum[domain]
-		fmt.Printf("%-30s %10d\n", domain, parsed.visits)
+	if err := printReport(os.Stdout, p); err != nil {
+		fmt.Fprintln(os.Stderr, err)
 	}
-	fmt.Printf("\n%-30s %10d\n", "Total", p.total)
+}
+
+// printReport writes the parsed totals in a stable alphabetical order.
+func printReport(w io.Writer, p parser) error {
+	domains := make([]string, 0, len(p.sum))
+	for domain := range p.sum {
+		domains = append(domains, domain)
+	}
+	sort.Strings(domains)
+
+	if _, err := fmt.Fprintf(w, "%-30s %10s\n", "Domain", "Visit counts:"); err != nil {
+		return err
+	}
+	if _, err := fmt.Fprintf(w, "%-30s %10s\n", strings.Repeat("-", 30), strings.Repeat("-", 10)); err != nil {
+		return err
+	}
+	for _, domain := range domains {
+		if _, err := fmt.Fprintf(w, "%-30s %10d\n", domain, p.sum[domain]); err != nil {
+			return err
+		}
+	}
+	_, err := fmt.Fprintf(w, "\n%-30s %10d\n", "Total", p.total)
+	return err
 }
